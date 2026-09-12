@@ -17,3 +17,13 @@ module.exports.reviewSchema = Joi.object({
         comment:Joi.string().required()
     }).required()
 })
+
+// Only shape/type checks here — ordering, past-date and conflict rules stay
+// in the controller so they can keep returning friendly flash messages
+// instead of a generic 400.
+module.exports.bookingSchema = Joi.object({
+    booking:Joi.object({
+        checkIn:Joi.date().required(),
+        checkOut:Joi.date().required()
+    }).required()
+})
