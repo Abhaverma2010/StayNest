@@ -19,6 +19,7 @@ const flash = require('connect-flash')
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const User = require('./models/user.js')
+const { generateCsrfToken } = require('./middleware.js')
 
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
@@ -40,6 +41,9 @@ main()
 
 async function main() {
   await mongoose.connect(mongo_url);
+}
+if(process.env.NODE_ENV === "production"){
+  app.set("trust proxy", 1); // required for secure cookies behind a reverse proxy (Render/Railway/etc.)
 }
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -67,7 +71,9 @@ const sessionOptions = {
     cookie:{
       expires: new Date(Date.now() + 7*24*60*60*1000),
       maxAge:7*24*60*60*1000,
-      httpOnly:true
+      httpOnly:true,
+      sameSite:"lax",
+      secure: process.env.NODE_ENV === "production"
     }
 }
 
@@ -92,6 +98,8 @@ app.use((req,res,next) =>{
     res.locals.currUser = req.user
     next()
 })
+
+app.use(generateCsrfToken)
 
 // app.get('/demouser', async(req,res) => {
 //   let fakeUser = new User({

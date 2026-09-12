@@ -10,6 +10,7 @@
         class="needs-validation"
         enctype = "multipart/form-data"
       >
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="mb-3">
           <label for="title" class="form-label">Title</label>
           <input

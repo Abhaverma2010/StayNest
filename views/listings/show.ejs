@@ -25,6 +25,7 @@
 <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark col-1 offset-3 edit-btn">Edit </a>
     
     <form method="post" action="/listings/<%= listing._id %>?_method=DELETE">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <button class="btn btn-dark offset-5">Delete</button>
     </form>
     </div>
@@ -34,6 +35,7 @@
     <hr/>
         <h4>Leave a review</h4>
         <form action="/listings/<%= listing.id %>/reviews" method="post" novalidate class="needs-validation">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
        <div class="mb-3 mt-3">
        <label for="rating" class="form-label">Rating</label>
@@ -75,6 +77,7 @@
                 <p class="card-text"><%= review.comment %></p>
                 
                 <form class="mb-3" method="post" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <button class="btn btn-sm btn-dark"> Delete </button>
                 </form>
             </div>
@@ -91,6 +94,7 @@
     
     <% if (currUser && !listing.owner.equals(currUser._id)) { %>
         <form action="/listings/<%= listing._id %>/bookings" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <div class="mb-3">
                 <label for="checkIn" class="form-label">Check-in Date</label>
                 <input 

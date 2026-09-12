@@ -1,20 +1,10 @@
 const Booking = require('../models/booking')
-const Listing = require('../models/listing')
-const ExpressError = require('../utils/ExpressError')
 
 // Create a new booking
 module.exports.createBooking = async (req, res) => {
     const { id } = req.params  // listing id
     const { checkIn, checkOut } = req.body.booking
-
-    const listing = await Listing.findById(id)
-    if (!listing) throw new ExpressError(404, "Listing not found")
-
-    // Prevent owner from booking their own listing
-    if (listing.owner.equals(req.user._id)) {
-        req.flash("error", "You cannot book your own listing!")
-        return res.redirect(`/listings/${id}`)
-    }
+    const listing = req.listing  // loaded + owner-checked by preventOwnerBooking middleware
 
     const checkInDate = new Date(checkIn)
     const checkOutDate = new Date(checkOut)
@@ -72,16 +62,7 @@ module.exports.myBookings = async (req, res) => {
 
 // Cancel a booking
 module.exports.cancelBooking = async (req, res) => {
-    const { bookingId } = req.params
-    const booking = await Booking.findById(bookingId)
-
-    if (!booking) throw new ExpressError(404, "Booking not found")
-
-    // Only the guest who booked can cancel
-    if (!booking.guest.equals(req.user._id)) {
-        req.flash("error", "You are not authorized to cancel this booking!")
-        return res.redirect('/bookings/my-bookings')
-    }
+    const booking = req.booking  // loaded + guest-checked by isBookingGuest middleware
 
     booking.status = "cancelled"
     await booking.save()
