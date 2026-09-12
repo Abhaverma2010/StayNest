@@ -23,7 +23,7 @@ module.exports.showListing = async(req,res)=>{
 
     if(!listing){
         req.flash("error","Listing you requested for does not exist")
-        res.redirect('/listings')
+        return res.redirect('/listings')
     }
       // Fetch active booked dates for this listing
     const bookedDates = await Booking.find({
@@ -67,7 +67,7 @@ module.exports.renderEditForm = async(req,res)=>{
     const listing = await Listing.findById(id)
     if(!listing){
         req.flash("error","Listing you requested for does not exist")
-        res.redirect('/listings')
+        return res.redirect('/listings')
     }
     let originalImageUrl = listing.image.url
     originalImageUrl = originalImageUrl.replace('/upload', '/upload/w_250')
@@ -76,7 +76,7 @@ module.exports.renderEditForm = async(req,res)=>{
 
 module.exports.updateListing = async(req,res)=>{
     let {id} = req.params
-    let listing = await Listing.findByIdAndUpdate(id,{...req.body.listing})
+    let listing = await Listing.findByIdAndUpdate(id,{...req.body.listing},{new:true})
     if(typeof req.file !== "undefined"){
         listing.image = {url: req.file.path, filename: req.file.filename}
         await listing.save()
