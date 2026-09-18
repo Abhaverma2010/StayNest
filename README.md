@@ -83,10 +83,16 @@ node app.js
 
 The app starts on `http://localhost:8080` (or `process.env.PORT` if set).
 
-To seed some sample listings:
+To seed some sample listings into your **local** database:
 
 ```bash
 node init/index.js
+```
+
+To seed the same data into **MongoDB Atlas** instead (e.g. after deploying and finding your production DB empty), run it with `NODE_ENV=production` and `ATLASDB_URL` set — it follows the same env-based branching as `app.js`:
+
+```bash
+NODE_ENV=production ATLASDB_URL="your_atlas_connection_string" node init/index.js
 ```
 
 ### Environment variables
