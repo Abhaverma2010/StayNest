@@ -26,6 +26,7 @@ Browse listings, view them on an interactive map, leave star ratings and reviews
 | Maps / geocoding | Mapbox SDK (server-side forward geocoding) + Mapbox GL JS (client-side map) |
 | Validation | Joi |
 | Styling | Bootstrap 5, custom CSS |
+| Testing | Jest + `mongodb-memory-server` (isolated, disposable MongoDB per test run) |
 
 This is a classic MVC app — every request gets a full server-rendered HTML response or a redirect. There is no separate JSON API and no client-side framework.
 
@@ -107,6 +108,20 @@ NODE_ENV=production ATLASDB_URL="your_atlas_connection_string" node init/index.j
 | `ATLASDB_URL` | production only | MongoDB Atlas connection string |
 | `NODE_ENV` | — | Set to `production` to use `ATLASDB_URL`, enable secure cookies, and skip loading `.env` |
 | `PORT` | — | Defaults to `8080` |
+
+## Testing
+
+```bash
+npm test
+```
+
+Runs the Jest suite — pure unit tests for the Joi validation schemas, plus an integration test for the booking date-conflict logic against a real, disposable MongoDB spun up by `mongodb-memory-server` (no local Mongo or Atlas connection required; it downloads and runs its own throwaway `mongod` binary).
+
+If the first run fails to download that binary for your platform, pin a known-good version:
+
+```bash
+MONGOMS_VERSION=7.0.14 npm test
+```
 
 ## Project structure
 
